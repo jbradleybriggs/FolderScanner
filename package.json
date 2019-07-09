@@ -1,0 +1,17 @@
+{
+  "name": "@drama_llama/folderscanner",
+  "version": "1.0.0",
+  "description": "Recursively scan a directory for particular file types.",
+  "main": "FolderScanner.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Recursive",
+    "Directory",
+    "Folder",
+    "List"
+  ],
+  "author": "J. Bradley Briggs",
+  "license": "ISC"
+}
