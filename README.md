@@ -10,9 +10,18 @@ Recursively scan the contents of a folder based on certain file types.
   fscan.scan("/home/username/Downloads", ['.jpg', 'jpeg', '.png'])
        .then((list) => {
           // do something with list
-          console.log(list) ; }) ;
+          console.log(list) ; 
+        }) ;
   
   // Synchronously scan Program Files for EXE files:
   var list = fscan.scanSync("C:\\Program Files", ['.exe']) ;
+  // do something with the list
   console.log(list) ;
+  
+  //Asynchronously scan for all file types in the Downloads folder but without recursing:
+  fscan.scan("/home/username/Downloads", [], false)
+       .then((list) => {
+          //do something with list
+          console.log(list) ; 
+        }) ;
 ```
