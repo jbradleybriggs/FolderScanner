@@ -3,48 +3,47 @@
 *
 * @author J. Bradley Briggs
 */
-module.exports = class FolderScanner {
+/*module.exports = */class FolderScanner {
     /**
      * 
      * @param {string} folderPath 
      * @param {Array} filter array of strings, always lower case
      */
-    constructor(folderPath, filter) {
+    constructor() {
         this.fs = require('fs');
-        this.folderPath = folderPath;
-        if (!filter || (typeof filter == 'object' && filter.length == 0)) filter = ['.*'];
-        this.filter = filter;
         if (process.platform == "win32") this.slash = "\\";
         else this.slash = '/';
     }
 
-    getFilesSync(recursive) {
-        this.fileList = [];
-        var files = this.fs.readdirSync(this.folderPath, { withFileTypes: true });
-        var getAll = this.filter.includes(".*");
+    scanSync(folderPath, filter = [], recursive = true) {
+        fileList = [];
+        if (!filter || (typeof filter == 'object' && filter.length == 0)) filter = ['.*'];
+        if (!folderPath) folderPath = process.argv[1].slice(0, process.argv[1].lastIndexOf(this.slash));
+        var files = this.fs.readdirSync(folderPath, { withFileTypes: true });
+        var getAll = filter.includes(".*");
 
         if (files.length > 0) {
             for (var index in files) {
-                var path = this.folderPath + this.slash + files[index].name;
+                var path = folderPath + this.slash + files[index].name;
 
                 if (files[index].isDirectory() && recursive) {
-                    var innerFs = new FolderScanner(path, this.filter);
+                    var innerFs = new FolderScanner(path, filter);
                     var innerFiles = innerFs.getFiles(recursive); //recursively scan 
-                    this.fileList = this.fileList.concat(innerFiles); //append these
+                    fileList = fileList.concat(innerFiles); //append these
                 }
                 else if (files[index].isFile()) {
 
                     if (!getAll) {
                         var ext = path.substring(path.lastIndexOf(".")).toLowerCase();
-                        if (this.filter.includes(ext)) {
-                            this.fileList.push(path);
+                        if (filter.includes(ext)) {
+                            fileList.push(path);
                         }
                     }
-                    else this.fileList.push(path);
+                    else fileList.push(path);
                 }
             }
         }
-        return this.fileList;
+        return fileList;
     }
 
     async readdir(path) {
@@ -56,22 +55,23 @@ module.exports = class FolderScanner {
         });
     }
 
-    async __getFiles(path, recursive) {
+    async __scan(path, filter, recursive) {
+        // console.log(path, filter);
         var fileList = [];
         var files = await this.readdir(path);
-        var getAll = this.filter.includes(".*");;
+        var getAll = filter.includes(".*");;
 
         if (files.length > 0) {
             for (var index in files) {
                 var subPath = path + this.slash + files[index].name;
                 if (files[index].isDirectory() && recursive) {
-                    var subFileList = await this.__getFiles(subPath, recursive);
+                    var subFileList = await this.__scan(subPath, filter, recursive);
                     fileList = fileList.concat(subFileList); //append these
                 }
                 else if (files[index].isFile()) {
                     if (!getAll) {
                         var ext = subPath.substring(subPath.lastIndexOf(".")).toLowerCase();
-                        if (this.filter.includes(ext)) {
+                        if (filter.includes(ext)) {
                             fileList.push(subPath);
                         }
                     }
@@ -82,19 +82,17 @@ module.exports = class FolderScanner {
         return fileList;
     }
 
-    async getFiles(recursive) {
+    async scan(folderPath, filter = [], recursive = true) {
+        if (!filter || (typeof filter == 'object' && filter.length == 0)) filter = ['.*'];
+        if (!folderPath) folderPath = process.argv[1].slice(0, process.argv[1].lastIndexOf(this.slash));
+        //console.log(folderPath, filter);
         return new Promise((resolve, reject) => {
-            resolve(this.__getFiles(this.folderPath, recursive));
+            resolve(this.__scan(folderPath, filter, recursive));
         })
-    }
-
-    saveToFile(filePath) {
-        if (this.fs.exists(filePath)) {
-            this.fs.unlink(filePath, (err) => { if (err) throw err });
-        }
-        this.fs.appendFile(filePath, this.fileList);
     }
 }
 
-// var fscan = new FolderScanner("/home/jason/Downloads", []);
-// fscan.getFiles(true).then(list => console.log(list));
+var fscan = new FolderScanner();
+fscan.scan("/home/jason/Downloads", ['.txt', '.jpg']).then((val) => {
+    console.log(val);
+})
