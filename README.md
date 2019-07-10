@@ -1,5 +1,11 @@
 # FolderScanner
-Recursively scan the contents of a folder based on certain file types.
+Scan the contents of a folder, filtering on certain file types. The scan can be done both asynchronously and synchronously; 
+the asynchronous version is recommended since recursively reading the contents of a folder and all its sub folders etc. can
+cause a major code block if done synchronously.
+
+# Installation
+Install the module using npm: `npm install @drama_llama/folderscanner --save`
+
 
 # Useage
 ```js
@@ -25,3 +31,4 @@ Recursively scan the contents of a folder based on certain file types.
           console.log(list) ; 
         }) ;
 ```
+
