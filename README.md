@@ -4,7 +4,7 @@ the asynchronous version is recommended since recursively reading the contents o
 cause a major code block if done synchronously.
 
 # Installation
-Install the module using npm: `npm install @drama_llama/folderscanner --save`
+Install the module with: `npm install @drama_llama/folderscanner --save`
 
 
 # Useage
