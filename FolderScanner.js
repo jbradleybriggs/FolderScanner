@@ -3,7 +3,7 @@
 *
 * @author J. Bradley Briggs
 */
-/*module.exports = */class FolderScanner {
+module.exports = class FolderScanner {
     /**
      * 
      * @param {string} folderPath 
@@ -92,7 +92,7 @@
     }
 }
 
-var fscan = new FolderScanner();
-fscan.scan("/home/jason/Downloads", ['.txt', '.jpg']).then((val) => {
-    console.log(val);
-})
+// var fscan = new FolderScanner();
+// fscan.scan("/home/jason/Downloads", ['.txt', '.jpg']).then((val) => {
+//     console.log(val);
+// })

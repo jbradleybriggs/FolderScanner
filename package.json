@@ -1,6 +1,6 @@
 {
   "name": "@drama_llama/folderscanner",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Recursively scan a directory for particular file types.",
   "main": "FolderScanner.js",
   "scripts": {
